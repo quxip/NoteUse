@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right, #1e1e1e, #2c2c2c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #eaeaea;
+        }
+        form {
+            background: #202020;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.4s ease;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .errorlist {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #2b2b2b;
+            color: #f5f5f5;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1e90ff;
+            background: #333;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #1c7ed6;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        p {
+            text-align: center;
+            margin-top: 15px;
+        }
+        a {
+            color: #4dabf7;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        a:hover {
+            color: #74c0fc;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <h2>Вход</h2>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+        <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться здесь</a>.</p>
+    </form>
+</body>
+</html>

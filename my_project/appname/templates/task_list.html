@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои задачи</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --card-dark: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-blue: #3a86ff;
+            --accent-green: #4cc9f0;
+            --accent-red: #f72585;
+            --border-dark: #333;
+            --priority-low: #17a2b8;
+            --priority-medium: #ffc107;
+            --priority-high: #dc3545;
+        }        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }        
+        .filter-container {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border-dark);
+            margin-bottom: 30px;
+        }        
+        .filter-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }        
+        .filter-item {
+            flex: 1 1 200px;
+            max-width: 220px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: var(--text-primary);
+        }        
+        .filter-item:focus {
+            background-color: #3a3a3a;
+            color: var(--text-primary);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.25);
+        }        
+        .add-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(58, 134, 255, 0.2);
+        }        
+        .add-btn:hover {
+            background-color: #2667cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }        
+        .task-card {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding-left: 25px;
+        }        
+        .task-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            background-color: var(--priority-medium);
+        }        
+        .task-card.priority-low::before {
+            background-color: var(--priority-low);
+        }        
+        .task-card.priority-medium::before {
+            background-color: var(--priority-medium);
+        }        
+        .task-card.priority-high::before {
+            background-color: var(--priority-high);
+        }       
+        .task-card:hover {
+            border-color: #444;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }        
+        .task-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }        
+        .task-description {
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }        
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }        
+        .task-actions {
+            display: flex;
+            gap: 12px;
+        }        
+        .btn-edit {
+            background-color: var(--accent-green);
+            color: #111;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }        
+        .btn-edit:hover {
+            background-color: #3db5d8;
+            transform: translateY(-1px);
+        }        
+        .btn-delete {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }        
+        .btn-delete:hover {
+            background-color: #e5177b;
+            transform: translateY(-1px);
+        }        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }        
+        .status-todo {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--accent-green);
+        }        
+        .status-in_progress {
+            background-color: rgba(247, 37, 133, 0.15);
+            color: var(--accent-red);
+        }        
+        .status-done {
+            background-color: rgba(58, 134, 255, 0.15);
+            color: var(--accent-blue);
+        }        
+        .modal-content {
+            background-color: var(--card-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-dark);
+        }        
+        .modal-header {
+            border-bottom: 1px solid var(--border-dark);
+        }        
+        .modal-footer {
+            border-top: 1px solid var(--border-dark);
+        }        
+        .btn-close {
+            filter: invert(1);
+        }        
+        .form-control, .form-select {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: var(--text-primary);
+        }        
+        .form-control:focus, .form-select:focus {
+            background-color: #333;
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.25rem rgba(58, 134, 255, 0.25);
+        }        
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }            
+            .filter-item {
+                max-width: 100%;
+            }            
+            .add-btn {
+                width: 100%;
+            }            
+            .task-meta {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">Мої завдання</h1>
+        
+        <div class="filter-container">
+            <form method="get" action="">
+                <div class="filter-row">
+                    <select class="form-select filter-item" name="status" onchange="this.form.submit()">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>Всі статуси</option>
+                        <option value="todo" {% if status_filter == 'todo' %}selected{% endif %}>To Do</option>
+                        <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option>
+                    </select>
+                    
+                    <select class="form-select filter-item" name="priority" onchange="this.form.submit()">
+                        <option value="all" {% if priority_filter == 'all' %}selected{% endif %}>Всі пріоритети</option>
+                        <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>Високий</option>
+                        <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Середній</option>
+                        <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Низький</option>
+                    </select>
+                    
+                    <input type="date" class="form-control filter-item" name="due_date" value="{{ due_date_filter|default:'' }}" onchange="this.form.submit()">
+                    
+                    <button type="button" class="btn add-btn" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                        + Додати завдання
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        {% for task in tasks %}
+        {% if task.created_by == request.user %}
+        <div class="task-card priority-{{ task.priority }}">
+            <div class="task-title">{{ task.title }}</div>
+            <div class="task-description">
+                {{ task.description|truncatechars:100 }}
+            </div>
+            <div class="task-meta">
+                <div>
+                    <span class="status-badge status-{{ task.status }}">{{ task.get_status_display }}</span>
+                </div>
+                <div>
+                    <span>Срок: {{ task.due_date|date:"d.m.Y"|default:"не указан" }}</span>
+                </div>
+                <div>
+                    <span>Создано: {{ task.created_at|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+            <div class="task-actions">
+                <a href="{% url 'edit_task' task.id %}" class="btn btn-edit">Редагувати</a>
+                <form action="{% url 'delete_task' task.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-delete" onclick="return confirm('Вы уверены, что хотите удалить задачу \"{{ task.title }}\"?')">
+                        Удалить
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="task-card text-center py-4">
+            <p class="text-muted">Немає завдань. Натисніть «+ Додати завдання», щоб створити перше.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Додати нове завдання</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'add_task' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Назва завдання*</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Опис</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пріоритет*</label>
+                            <select class="form-select" name="priority" required>
+                                <option value="low">Низький</option>
+                                <option value="medium" selected>Середній</option>
+                                <option value="high">Високий</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Статус*</label>
+                            <select class="form-select" name="status" required>
+                                <option value="todo" selected>To Do</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Термін виконання</label>
+                            <input type="date" class="form-control" name="due_date">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Зберегти</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteForms = document.querySelectorAll('form[action*="/delete/"]');
+            
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const taskTitle = this.closest('.task-card').querySelector('.task-title').textContent;
+                    if (!confirm(`Вы уверены, что хотите удалить задачу "${taskTitle}"?`)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
